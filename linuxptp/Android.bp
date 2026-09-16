@@ -1,0 +1,95 @@
+//
+// external/linuxptp/Android.bp
+//
+package {
+    default_applicable_licenses: ["external_linuxptp_license"],
+}
+
+license {
+    name: "external_linuxptp_license",
+    visibility: [":__subpackages__"],
+    license_kinds: ["SPDX-license-identifier-GPL-2.0-or-later"],
+    license_text: ["COPYING"],
+}
+
+cc_defaults {
+    name: "linuxptp_defaults",
+    vendor: true,
+    cflags: [
+        // Zwingend: erzwingt linux/if_link.h VOR missing.h, sonst
+        // Redefinition der IFLA_BOND_*-Enums (Details s. 6.4).
+        // EIN String mit Leerzeichen - Soong kennt diese Sonderform.
+        "-include linux/if_link.h",
+
+        "-D_GNU_SOURCE",
+        "-DVER=4.4",
+        "-DHAVE_CLOCK_ADJTIME",
+        "-DHAVE_ONESTEP_SYNC",
+        "-DHAVE_ONESTEP_P2P",
+        "-DHAVE_VCLOCKS",
+        "-DHAVE_PTP_CAPS_ADJUST_PHASE",
+        "-Wno-unused-parameter",
+        "-Wno-missing-field-initializers",
+        "-Wno-sign-compare",
+        "-Wno-format",
+        "-Wno-pointer-arith",
+        // Zwingend: Soong baut mit -Werror, diese beiden Warnungen treten
+        // im unveränderten linuxptp-Code auf (Details s. u.)
+        "-Wno-gnu-variable-sized-type-not-at-end",
+        "-Wno-address-of-packed-member",
+        "-Wno-macro-redefined",
+    ],
+}
+
+cc_library_static {
+    name: "liblinuxptp_common",
+    defaults: ["linuxptp_defaults"],
+    srcs: [
+        "bmc.c", "clock.c", "clockadj.c", "clockcheck.c", "config.c",
+        "designated_fsm.c", "e2e_tc.c", "fault.c", "filter.c", "fsm.c",
+        "hash.c", "interface.c", "linreg.c", "mave.c", "mmedian.c",
+        "monitor.c", "msg.c", "ntpshm.c", "nullf.c", "p2p_tc.c", "phc.c",
+        "pi.c", "pmc_agent.c", "pmc_common.c", "port.c", "port_signaling.c",
+        "pqueue.c", "print.c", "raw.c", "refclock_sock.c", "rtnl.c", "sad.c",
+        "servo.c", "sk.c", "stats.c", "sysoff.c", "tc.c", "telecom.c",
+        "tlv.c", "transport.c", "tsproc.c", "udp.c", "udp6.c", "uds.c",
+        "unicast_client.c", "unicast_fsm.c", "unicast_service.c",
+        "util.c", "version.c",
+    ],
+}
+
+cc_binary {
+    name: "ptp4l",
+    defaults: ["linuxptp_defaults"],
+    srcs: ["ptp4l.c"],
+    static_libs: ["liblinuxptp_common"],
+    init_rc: ["gptp.rc"],
+}
+
+cc_binary {
+    name: "phc2sys",
+    defaults: ["linuxptp_defaults"],
+    srcs: ["phc2sys.c"],
+    static_libs: ["liblinuxptp_common"],
+}
+
+cc_binary {
+    name: "pmc",
+    defaults: ["linuxptp_defaults"],
+    srcs: ["pmc.c"],
+    static_libs: ["liblinuxptp_common"],
+}
+
+cc_binary {
+    name: "phc_ctl",
+    defaults: ["linuxptp_defaults"],
+    srcs: ["phc_ctl.c"],
+    static_libs: ["liblinuxptp_common"],
+}
+
+cc_binary {
+    name: "hwstamp_ctl",
+    defaults: ["linuxptp_defaults"],
+    srcs: ["hwstamp_ctl.c"],
+    static_libs: ["liblinuxptp_common"],
+}
