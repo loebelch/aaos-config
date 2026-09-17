@@ -1,0 +1,32 @@
+package {
+    default_applicable_licenses: ["external_libavtp_license"],
+}
+
+license {
+    name: "external_libavtp_license",
+    visibility: [":__subpackages__"],
+    license_kinds: ["SPDX-license-identifier-BSD"],
+    license_text: ["LICENSE"],
+}
+
+cc_library_shared {
+    name: "libavtp",
+    vendor_available: true,
+    host_supported: false,
+    srcs: [
+        "src/avtp.c",
+        "src/avtp_aaf.c",
+        "src/avtp_crf.c",
+        "src/avtp_cvf.c",
+        "src/avtp_rvf.c",
+        "src/avtp_ieciidc.c",
+        "src/avtp_stream.c",
+        "src/avtp_vsf_stream.c",
+    ],
+    export_include_dirs: ["include"],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+}
