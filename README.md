@@ -1,13 +1,15 @@
 # AAOS configuration
 
 This repository contains Android Automotive OS configuration for running
-linuxptp gPTP on a Raspberry Pi 5 target.
+linuxptp gPTP and AVTP on a Raspberry Pi 5 target.
 
 ## Contents
 
 - `linuxptp/Android.bp.linuxptp`: Soong definitions for the linuxptp static
   library and binaries (`ptp4l`, `phc2sys`, `pmc`, `phc_ctl`, and
   `hwstamp_ctl`).
+- `libavtp/Android.bp.libavtp`: Soong definition for the vendor-available
+  shared `libavtp` library.
 - `linuxptp/gptp.cfg`: IEEE 802.1AS automotive gPTP configuration for `eth0`.
 - `linuxptp/gptp.rc`: Android init services and the
   `vendor.gptp.enable` property trigger.
@@ -38,6 +40,22 @@ m ptp4l phc2sys pmc phc_ctl hwstamp_ctl
 Install `gptp.cfg` in `/vendor/etc/` and include `gptp.rc` in the `ptp4l`
 module installation. The services run in the `gptp` SELinux domain and require
 the corresponding device policy to be present in the target product.
+
+## libavtp integration
+
+Place the libavtp source tree in the Android source tree at
+`external/libavtp`. The Soong file is intended to be used as
+`external/libavtp/Android.bp`; it expects the upstream source files, public
+headers, and `LICENSE` to be present in that directory.
+
+Build the AVTP library from the AOSP root with:
+
+```sh
+m libavtp
+```
+
+The library is built as a shared vendor-available module and exports headers
+from the source tree's `include` directory.
 
 ## Runtime control
 
