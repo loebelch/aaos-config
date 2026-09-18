@@ -9,10 +9,26 @@ license {
     license_text: ["LICENSE"],
 }
 
-cc_library_shared {
+cc_defaults {
+    name: "libavtp_defaults",
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-unused-parameter",
+    ],
+}
+
+cc_library {
     name: "libavtp",
+    defaults: ["libavtp_defaults"],
+
+    // In Vendor- und System-Partition nutzbar (Audio-HAL, EVS, Vendor-Daemons)
     vendor_available: true,
+    product_available: true,
+    recovery_available: false,
     host_supported: false,
+
     srcs: [
         "src/avtp.c",
         "src/avtp_aaf.c",
@@ -23,10 +39,12 @@ cc_library_shared {
         "src/avtp_stream.c",
         "src/avtp_vsf_stream.c",
     ],
+
+    local_include_dirs: ["include", "src"],
     export_include_dirs: ["include"],
-    cflags: [
-        "-Wall",
-        "-Wextra",
-        "-Werror",
-    ],
+
+    stl: "none",
+
+    // aus meson.build: version 0.2.0
+    stem: "libavtp",
 }
