@@ -1,0 +1,10 @@
+name: "libavtp"
+description: "Open source implementation of IEEE 1722-2016 (AVTP)"
+third_party {
+  license_type: NOTICE
+  identifier {
+    type: "Git"
+    value: "https://github.com/Avnu/libavtp"
+    version: "v0.2.0"
+  }
+}
