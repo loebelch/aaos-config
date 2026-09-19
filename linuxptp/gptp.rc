@@ -3,11 +3,10 @@ service gptp /vendor/bin/ptp4l -f /vendor/etc/gptp.cfg -i eth0
     user root
     group root system inet net_admin net_raw
     capabilities NET_ADMIN NET_RAW SYS_TIME
-    socket ptp4l stream 0660 root system
     disabled
     seclabel u:r:gptp:s0
 
-service phc2sys /vendor/bin/phc2sys -s /dev/ptp0 -c CLOCK_REALTIME -w -m \
+service phc2sys /vendor/bin/phc2sys -s /dev/ptp0 -c CLOCK_REALTIME -O -37 \
         -z /dev/socket/ptp4l
     class late_start
     user root
@@ -18,6 +17,7 @@ service phc2sys /vendor/bin/phc2sys -s /dev/ptp0 -c CLOCK_REALTIME -w -m \
 
 on property:vendor.gptp.enable=1
     start gptp
+    start phc2sys
 
 on property:vendor.gptp.enable=0
     stop phc2sys
