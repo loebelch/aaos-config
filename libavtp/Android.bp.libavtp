@@ -48,3 +48,69 @@ cc_library {
     // aus meson.build: version 0.2.0
     stem: "libavtp",
 }
+
+cc_defaults {
+    name: "libavtp_example_defaults",
+
+    // ACHTUNG: NICHT von libavtp_defaults erben!
+    // Die Beispiele sind upstream nicht gegen -Wextra sauber (siehe unten).
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-Wno-sign-compare",
+        "-Wno-missing-field-initializers",
+    ],
+
+    vendor: true,
+    static_libs: ["libavtp"],
+
+    srcs: [
+        "examples/common.c",
+        "android/argp.c",
+    ],
+
+    // "."      -> #include "examples/common.h"
+    // "android"-> #include <argp.h> (bionic-Shim)
+    local_include_dirs: [
+        ".",
+        "include",
+        "android",
+    ],
+}
+
+cc_binary {
+    name: "aaf-talker",
+    defaults: ["libavtp_example_defaults"],
+    srcs: ["examples/aaf-talker.c"],
+}
+
+cc_binary {
+    name: "aaf-listener",
+    defaults: ["libavtp_example_defaults"],
+    srcs: ["examples/aaf-listener.c"],
+}
+
+cc_binary {
+    name: "crf-talker",
+    defaults: ["libavtp_example_defaults"],
+    srcs: ["examples/crf-talker.c"],
+}
+
+cc_binary {
+    name: "crf-listener",
+    defaults: ["libavtp_example_defaults"],
+    srcs: ["examples/crf-listener.c"],
+}
+
+cc_binary {
+    name: "cvf-talker",
+    defaults: ["libavtp_example_defaults"],
+    srcs: ["examples/cvf-talker.c"],
+}
+
+cc_binary {
+    name: "cvf-listener",
+    defaults: ["libavtp_example_defaults"],
+    srcs: ["examples/cvf-listener.c"],
+}
