@@ -1,3 +1,8 @@
+//
+// external/libavtp/Android.bp
+// AVTP (IEEE 1722-2016) für AAOS 17 / Raspberry Pi 5
+//
+
 package {
     default_applicable_licenses: ["external_libavtp_license"],
 }
@@ -8,6 +13,10 @@ license {
     license_kinds: ["SPDX-license-identifier-BSD"],
     license_text: ["LICENSE"],
 }
+
+// ---------------------------------------------------------------------------
+// Bibliothek
+// ---------------------------------------------------------------------------
 
 cc_defaults {
     name: "libavtp_defaults",
@@ -23,10 +32,8 @@ cc_library {
     name: "libavtp",
     defaults: ["libavtp_defaults"],
 
-    // In Vendor- und System-Partition nutzbar (Audio-HAL, EVS, Vendor-Daemons)
     vendor_available: true,
     product_available: true,
-    recovery_available: false,
     host_supported: false,
 
     srcs: [
@@ -40,20 +47,24 @@ cc_library {
         "src/avtp_vsf_stream.c",
     ],
 
-    local_include_dirs: ["include", "src"],
+    local_include_dirs: [
+        "include",
+        "src",
+    ],
     export_include_dirs: ["include"],
 
     stl: "none",
-
-    // aus meson.build: version 0.2.0
-    stem: "libavtp",
 }
+
+// ---------------------------------------------------------------------------
+// Beispiel-/Testtools
+// ---------------------------------------------------------------------------
 
 cc_defaults {
     name: "libavtp_example_defaults",
 
     // ACHTUNG: NICHT von libavtp_defaults erben!
-    // Die Beispiele sind upstream nicht gegen -Wextra sauber (siehe unten).
+    // Die Beispiele sind upstream nicht gegen -Wextra sauber.
     cflags: [
         "-Wall",
         "-Werror",
@@ -70,8 +81,8 @@ cc_defaults {
         "android/argp.c",
     ],
 
-    // "."      -> #include "examples/common.h"
-    // "android"-> #include <argp.h> (bionic-Shim)
+    // "."       -> #include "examples/common.h"
+    // "android" -> #include <argp.h> (bionic-Shim)
     local_include_dirs: [
         ".",
         "include",
