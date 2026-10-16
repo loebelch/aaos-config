@@ -63,4 +63,3 @@ cc_binary { name: "cvf-listener", defaults: ["libavtp_example_defaults"], srcs: 
 
 // Eigenbau, siehe Langfassung
 cc_binary { name: "aaf-talker2",  defaults: ["libavtp_example_defaults"], srcs: ["examples/aaf-talker2.c"] }
-cc_binary { name: "aaf-dump",     defaults: ["libavtp_example_defaults"], srcs: ["examples/aaf-dump.c"] }
