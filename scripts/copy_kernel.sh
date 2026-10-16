@@ -13,4 +13,4 @@ cp $K/arch/arm64/boot/dts/broadcom/bcm2712*.dtb $D/
 cp $K/arch/arm64/boot/dts/overlays/*.dtbo $D/overlays/
 
 # Kernelmodule: im Build verschachtelt, im Device-Tree aber flach
-find $K -name '*.ko' -exec cp {} $D/modules/ \;
+find $K -name '*.ko' -not -path '*/staging/*' -exec cp {} $D/modules/ \;
