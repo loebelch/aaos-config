@@ -1,8 +1,3 @@
-//
-// external/libavtp/Android.bp
-// AVTP (IEEE 1722-2016) für AAOS 17 / Raspberry Pi 5
-//
-
 package {
     default_applicable_licenses: ["external_libavtp_license"],
 }
@@ -14,28 +9,17 @@ license {
     license_text: ["LICENSE"],
 }
 
-// ---------------------------------------------------------------------------
-// Bibliothek
-// ---------------------------------------------------------------------------
-
 cc_defaults {
     name: "libavtp_defaults",
-    cflags: [
-        "-Wall",
-        "-Wextra",
-        "-Werror",
-        "-Wno-unused-parameter",
-    ],
+    cflags: ["-Wall", "-Wextra", "-Werror", "-Wno-unused-parameter"],
 }
 
 cc_library {
     name: "libavtp",
     defaults: ["libavtp_defaults"],
-
     vendor_available: true,
     product_available: true,
     host_supported: false,
-
     srcs: [
         "src/avtp.c",
         "src/avtp_aaf.c",
@@ -46,25 +30,15 @@ cc_library {
         "src/avtp_stream.c",
         "src/avtp_vsf_stream.c",
     ],
-
-    local_include_dirs: [
-        "include",
-        "src",
-    ],
+    local_include_dirs: ["include", "src"],
     export_include_dirs: ["include"],
-
     stl: "none",
 }
 
-// ---------------------------------------------------------------------------
-// Beispiel-/Testtools
-// ---------------------------------------------------------------------------
-
 cc_defaults {
     name: "libavtp_example_defaults",
-
-    // ACHTUNG: NICHT von libavtp_defaults erben!
-    // Die Beispiele sind upstream nicht gegen -Wextra sauber.
+    // NICHT von libavtp_defaults erben - die Beispiele sind upstream
+    // nicht gegen -Wextra sauber.
     cflags: [
         "-Wall",
         "-Werror",
@@ -72,56 +46,21 @@ cc_defaults {
         "-Wno-sign-compare",
         "-Wno-missing-field-initializers",
     ],
-
     vendor: true,
     static_libs: ["libavtp"],
-
-    srcs: [
-        "examples/common.c",
-        "android/argp.c",
-    ],
-
+    srcs: ["examples/common.c", "android/argp.c"],
     // "."       -> #include "examples/common.h"
     // "android" -> #include <argp.h> (bionic-Shim)
-    local_include_dirs: [
-        ".",
-        "include",
-        "android",
-    ],
+    local_include_dirs: [".", "include", "android"],
 }
 
-cc_binary {
-    name: "aaf-talker",
-    defaults: ["libavtp_example_defaults"],
-    srcs: ["examples/aaf-talker.c"],
-}
+cc_binary { name: "aaf-talker",   defaults: ["libavtp_example_defaults"], srcs: ["examples/aaf-talker.c"] }
+cc_binary { name: "aaf-listener", defaults: ["libavtp_example_defaults"], srcs: ["examples/aaf-listener.c"] }
+cc_binary { name: "crf-talker",   defaults: ["libavtp_example_defaults"], srcs: ["examples/crf-talker.c"] }
+cc_binary { name: "crf-listener", defaults: ["libavtp_example_defaults"], srcs: ["examples/crf-listener.c"] }
+cc_binary { name: "cvf-talker",   defaults: ["libavtp_example_defaults"], srcs: ["examples/cvf-talker.c"] }
+cc_binary { name: "cvf-listener", defaults: ["libavtp_example_defaults"], srcs: ["examples/cvf-listener.c"] }
 
-cc_binary {
-    name: "aaf-listener",
-    defaults: ["libavtp_example_defaults"],
-    srcs: ["examples/aaf-listener.c"],
-}
-
-cc_binary {
-    name: "crf-talker",
-    defaults: ["libavtp_example_defaults"],
-    srcs: ["examples/crf-talker.c"],
-}
-
-cc_binary {
-    name: "crf-listener",
-    defaults: ["libavtp_example_defaults"],
-    srcs: ["examples/crf-listener.c"],
-}
-
-cc_binary {
-    name: "cvf-talker",
-    defaults: ["libavtp_example_defaults"],
-    srcs: ["examples/cvf-talker.c"],
-}
-
-cc_binary {
-    name: "cvf-listener",
-    defaults: ["libavtp_example_defaults"],
-    srcs: ["examples/cvf-listener.c"],
-}
+// Eigenbau, siehe Langfassung
+cc_binary { name: "aaf-talker2",  defaults: ["libavtp_example_defaults"], srcs: ["examples/aaf-talker2.c"] }
+cc_binary { name: "aaf-dump",     defaults: ["libavtp_example_defaults"], srcs: ["examples/aaf-dump.c"] }
