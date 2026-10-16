@@ -1,0 +1,9 @@
+   cc_library_shared {
+       name: "libasound_module_pcm_aaf",
+       vendor: true,                        // libasound ist vendor-only
+       relative_install_path: "alsa-lib",   // -> /vendor/lib64/alsa-lib/
+       compile_multilib: "64",              // libasound dlopen't aus 64-bit
+       srcs: ["aaf/pcm_aaf.c"],
+       shared_libs: ["libasound", "libavtp"],
+       cflags: ["-Wall", "-Wno-unused-parameter"],
+   }
