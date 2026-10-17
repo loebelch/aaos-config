@@ -1,3 +1,14 @@
+   package {
+       default_applicable_licenses: ["external_alsa-plugins_license"],
+   }
+
+   license {
+       name: "external_alsa-plugins_license",
+       visibility: [":__subpackages__"],
+       license_kinds: ["SPDX-license-identifier-LGPL-2.1"],
+       license_text: ["COPYING"],
+   }
+
    cc_library_shared {
        name: "libasound_module_pcm_aaf",
        vendor: true,                        // libasound ist vendor-only
@@ -5,5 +16,13 @@
        compile_multilib: "64",              // libasound dlopen't aus 64-bit
        srcs: ["aaf/pcm_aaf.c"],
        shared_libs: ["libasound", "libavtp"],
-       cflags: ["-Wall", "-Wno-unused-parameter"],
+       cflags: [
+           // ZWINGEND: alsa-lib waehlt in include/global.h ueber das bare Makro
+           // PIC zwischen Plugin- und Static-Variante. Soong setzt es nicht
+           // (Clang definiert nur __PIC__). Ohne -DPIC: undefined symbol
+           // snd_dlsym_start beim Linken -- Details s. 12.6.
+           "-DPIC",
+           "-Wall",
+           "-Wno-unused-parameter",
+       ],
    }
